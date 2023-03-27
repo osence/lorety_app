@@ -7,7 +7,6 @@ import 'package:lorety_app/messages.dart';
 import 'package:lorety_app/my_events.dart';
 import 'package:lorety_app/profile.dart';
 
-
 void main() {
   runApp(const MyApp());
 }
@@ -53,7 +52,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'События',
       theme: ThemeData(primarySwatch: generateMaterialColor(Colors.white)),
-      home: const LoginPage(),
+      home: const MyHomePage(title: 'События'),
     );
   }
 }
