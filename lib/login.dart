@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_login/flutter_login.dart';
 import 'package:lorety_app/main.dart';
-import 'package:lorety_app/API/login_request.dart';
+import 'package:lorety_app/API/post_login.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
-
   @override
   State<LoginPage> createState() => _LoginPageState();
 }

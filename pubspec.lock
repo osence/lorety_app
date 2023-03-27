@@ -86,6 +86,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_image_slideshow:
+    dependency: "direct main"
+    description:
+      name: flutter_image_slideshow
+      sha256: "0192bf6c683fe993e4694d8803c0b4a0c0757333c356900a9b74bb7fe57546da"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.4"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -102,6 +110,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.1.1"
+  flutter_progress_hud:
+    dependency: "direct main"
+    description:
+      name: flutter_progress_hud
+      sha256: "19a4889460b7482c5026a936b768996dade4daad8570e8c0493e292d57121dbb"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.2"
   flutter_test:
     dependency: "direct dev"
     description: flutter

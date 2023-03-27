@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 
 class Event {
   final int id;
-  final String? event_url;
+  final String event_url;
   final String? date;
   final int? organizer_id;
   final int? location_id;
@@ -65,7 +65,7 @@ class Event {
       this.seating_id);
 }
 
-Future<List<Event>?> fetchEvents() async {
+Future<List<Event>?>? fetchEvents() async {
   final dio = Dio();
   final List<Event> events_list = [];
   final response = await dio.get(
@@ -117,7 +117,7 @@ Future<List<Event>?> fetchEvents() async {
   } else {
     // If the server did not return a 200 OK response,
     // then throw an exception.
-    throw Exception('Failed to load AuthToken  ${response.statusCode}');
+    throw Exception('Failed to GET ${response.statusCode}');
   }
   return null;
 }
