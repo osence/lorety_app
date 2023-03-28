@@ -5,31 +5,31 @@ import 'package:dio/dio.dart';
 class Event {
   final int id;
   final String event_url;
-  final String? date;
+  final String date;
   final int? organizer_id;
   final int? location_id;
   final String? finish_date;
-  final String? start_time;
-  final String? finish_time;
+  final String start_time;
+  final String finish_time;
   final String description;
   final String? description_html;
   final String full_description;
-  final String? place;
-  final String? place_premises;
-  final double? place_lat;
-  final double? place_lon;
-  final String? cover;
-  final String? cover_preload;
+  final String place;
+  final String place_premises;
+  final double place_lat;
+  final double place_lon;
+  final String cover;
+  final String cover_preload;
   final String? ym_code;
-  final int? payment_type;
-  final int? count_places;
-  final double? price;
+  final int payment_type;
+  final int count_places;
+  final double price;
   final int? amount_ticket_categories;
-  final int? age_category_rars;
-  final int? visibility_status;
-  final List<dynamic>? tags;
-  final bool? in_bookmark;
-  final int? is_finalize;
+  final int age_category_rars;
+  final int visibility_status;
+  final List<dynamic> tags;
+  final bool in_bookmark;
+  final int is_finalize;
   final String? whatsapp_template;
   final int? seating_id;
 
@@ -65,9 +65,9 @@ class Event {
       this.seating_id);
 }
 
-Future<List<Event>?>? fetchEvents() async {
+Future<List<Event>> fetchEvents() async {
   final dio = Dio();
-  final List<Event> events_list = [];
+  final List<Event> eventsList = [];
   final response = await dio.get(
     'https://api-dev.lorety.com/v2/events/',
   );
@@ -76,7 +76,7 @@ Future<List<Event>?>? fetchEvents() async {
     // then parse the JSON.
     try {
       for (var i = 0; i < response.data.length; i++) {
-        events_list.add(Event(
+        eventsList.add(Event(
           response.data[i]['id'],
           response.data[i]['event_url'],
           response.data[i]['date'],
@@ -108,16 +108,15 @@ Future<List<Event>?>? fetchEvents() async {
           response.data[i]['seating_id'],
         ));
       }
-      return events_list;
+      return eventsList;
       //events_list содержит все события
     } catch (e) {
       print(e);
-      return null;
+      return <Event>[];
     }
   } else {
     // If the server did not return a 200 OK response,
     // then throw an exception.
     throw Exception('Failed to GET ${response.statusCode}');
   }
-  return null;
 }

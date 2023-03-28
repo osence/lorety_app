@@ -6,26 +6,23 @@ import 'package:lorety_app/API/get_event_photos.dart';
 import 'package:lorety_app/event_description.dart';
 
 class EventBox extends StatelessWidget {
-  const EventBox({Key? key, this.event}) : super(key: key);
-  final Event? event;
+  const EventBox({Key? key, required this.event}) : super(key: key);
+  final Event event;
 
   @override
   Widget build(BuildContext context) {
-    Future<List<EventPhoto>?> event_photos_list = fetchEventPhotos(event?.id);
+    Future<List<EventPhoto>> event_photos_list = fetchEventPhotos(event.id);
     List<String> images = [];
     String? schedule = '';
-    if (event?.date != null &&
-        event?.finish_date != null &&
-        event?.date != event?.finish_date) {
+    if (event.finish_date != null && event.date != event.finish_date) {
       schedule =
-          '$schedule${event?.date.toString()} - ${event?.finish_date.toString()}';
-    } else if (event?.date != null) {
-      schedule = '$schedule${event?.date.toString()}';
+          '$schedule${event.date.toString()} - ${event.finish_date.toString()}';
+    } else {
+      schedule = '$schedule${event.date.toString()}';
     }
-    if (event?.start_time != null && event?.finish_time != null) {
-      schedule =
-          '$schedule с ${event?.start_time.toString()} до ${event?.finish_time.toString()}';
-    }
+
+    schedule =
+        '$schedule с ${event.start_time.toString()} до ${event.finish_time.toString()}';
     return Padding(
       padding: const EdgeInsets.all(10),
       child: Container(
@@ -50,9 +47,16 @@ class EventBox extends StatelessWidget {
                   // Check for errors
                   if (snapshot.hasError) {
                     //TODO Error screen
-                    return Container();
+                    return Container(
+                      color: Colors.green,
+                    );
                   }
                   if (snapshot.connectionState == ConnectionState.done) {
+                    if (snapshot.data!.length == 0) {
+                      return Container(
+                        child: Image.asset('images/no-image.png'),
+                      );
+                    }
                     for (var i = 0; i < snapshot.data!.length; i++) {
                       images.add(snapshot.data![i].getPhotoUrl());
                     }
@@ -63,11 +67,30 @@ class EventBox extends StatelessWidget {
                       initialPage: 0,
                       indicatorColor: Colors.blue,
                       indicatorBackgroundColor: Colors.grey,
-                      children: images
-                          .map((item) => Image.network(item, fit: BoxFit.cover))
-                          .toList(),
                       autoPlayInterval: 0,
                       isLoop: false,
+                      children: snapshot.data!
+                          .map((item) => Image.network(
+                                item.getPhotoUrl(),
+                                fit: BoxFit.cover,
+                                errorBuilder: (BuildContext context,
+                                    Object exception, StackTrace? stackTrace) {
+                                  return Image.network(
+                                    item.getOldPhotoUrl(),
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (BuildContext context,
+                                        Object exception,
+                                        StackTrace? stackTrace) {
+                                      if(event.id == 1777){
+                                        print(item.getPhotoUrl());
+                                        print(item.getOldPhotoUrl());
+                                      }
+                                      return Image.asset('images/no-image.png');
+                                    },
+                                  );
+                                },
+                              ))
+                          .toList(),
                     );
                   }
                   // Otherwise, show something whilst waiting for initialization to complete
@@ -97,7 +120,8 @@ class EventBox extends StatelessWidget {
             ),
             Text(
               schedule,
-              textAlign: TextAlign.left,style: TextStyle(color: Color(0xff747474)),
+              textAlign: TextAlign.left,
+              style: TextStyle(color: Color(0xff747474)),
             ),
             //TODO Добавить геолокацию
             RichText(
@@ -116,7 +140,7 @@ class EventBox extends StatelessWidget {
 
 class EventsPage extends StatelessWidget {
   EventsPage({Key? key}) : super(key: key);
-  Future<List<Event>?>? _events_list = fetchEvents();
+  Future<List<Event>> _events_list = fetchEvents();
 
   @override
   Widget build(BuildContext context) {
@@ -134,12 +158,8 @@ class EventsPage extends StatelessWidget {
               child: Container(
                 child: SingleChildScrollView(
                   child: Column(
-                    children: [
-                      EventBox(event: snapshot.data?[0]),
-                      EventBox(event: snapshot.data?[6]),
-                      EventBox(event: snapshot.data?[9]),
-                      EventBox(event: snapshot.data?[15]),
-                    ],
+                    children:
+                        snapshot.data!.map((x) => EventBox(event: x)).toList(),
                   ),
                 ),
               ),

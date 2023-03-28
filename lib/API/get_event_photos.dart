@@ -11,20 +11,22 @@ class EventPhoto {
   final int event_id;
   final String created_at;
   final String? mimetype;
-  final int order;
+  final int? order;
 
   String getPhotoUrl(){
     return 'https://api-dev.lorety.com/v2/event/cover/${name.split('.')[0]}';
+  }
+  String getOldPhotoUrl(){
+    return 'https://old.lorety.com/uploads/event_photos/$event_id/orig/$name';
   }
 
   EventPhoto(this.id, this.updated_at, this.original_name, this.name,
       this.archived, this.event_id, this.created_at, this.mimetype, this.order);
 }
 
-Future<List<EventPhoto>?> fetchEventPhotos(event_id) async {
+Future<List<EventPhoto>> fetchEventPhotos(event_id) async {
   final dio = Dio();
   final List<EventPhoto> event_photos_list = [];
-  print(event_id);
   final response = await dio.get(
     'https://api-dev.lorety.com/v2/event/photos/$event_id',
   );
@@ -45,17 +47,15 @@ Future<List<EventPhoto>?> fetchEventPhotos(event_id) async {
           response.data[i]['order'],
         ));
       }
-      print(event_photos_list);
       return event_photos_list;
       //events_list содержит все события
     } catch (e) {
       print(e);
-      return null;
+      return <EventPhoto>[];
     }
   } else {
     // If the server did not return a 200 OK response,
     // then throw an exception.
     throw Exception('Failed to load GET ${response.statusCode}');
   }
-  return null;
 }
