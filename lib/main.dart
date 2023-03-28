@@ -51,7 +51,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'События',
-      theme: ThemeData(primarySwatch: generateMaterialColor(Colors.white)),
+      //TODO Вынести константы цвета в файл с темами
+      theme: ThemeData(primarySwatch: generateMaterialColor(Colors.white),
+          scaffoldBackgroundColor: const Color(0xffeae9ef)),
       home: const MyHomePage(title: 'События'),
     );
   }
@@ -95,18 +97,18 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
       body: PageView(
-        children: [
-          EventsPage(),
-          MessagesPage(),
-          MyEventsPage(),
-          ProfilePage(),
-        ],
         controller: pageController,
         onPageChanged: (index) {
           setState(() {
             selectedIndex = index;
           });
         },
+        children: [
+          EventsPage(),
+          MessagesPage(),
+          MyEventsPage(),
+          ProfilePage(),
+        ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,

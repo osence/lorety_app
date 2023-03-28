@@ -11,9 +11,9 @@ class Event {
   final String? finish_date;
   final String? start_time;
   final String? finish_time;
-  final String? description;
+  final String description;
   final String? description_html;
-  final String? full_description;
+  final String full_description;
   final String? place;
   final String? place_premises;
   final double? place_lat;

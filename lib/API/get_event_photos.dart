@@ -14,7 +14,7 @@ class EventPhoto {
   final int order;
 
   String getPhotoUrl(){
-    return 'https://api.lorety.com/v2/event/cover/${name.split('.')[0]}';
+    return 'https://api-dev.lorety.com/v2/event/cover/${name.split('.')[0]}';
   }
 
   EventPhoto(this.id, this.updated_at, this.original_name, this.name,
