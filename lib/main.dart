@@ -7,6 +7,8 @@ import 'package:lorety_app/messages.dart';
 import 'package:lorety_app/my_events.dart';
 import 'package:lorety_app/profile.dart';
 
+import 'API/post_login.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -52,16 +54,27 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'События',
       //TODO Вынести константы цвета в файл с темами
-      theme: ThemeData(primarySwatch: generateMaterialColor(Colors.white),
+      theme: ThemeData(
+          primarySwatch: generateMaterialColor(Colors.white),
           scaffoldBackgroundColor: const Color(0xffeae9ef)),
-      home: const MyHomePage(title: 'События'),
+      home:
+          const LoginPage(), /*MyHomePage(
+        title: 'События',
+         token: AuthToken(
+            access_token:
+                'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0ODY2IiwiaXNfYWRtaW4iOjAsImV4cCI6MTY4NDU3OTEzMSwidHlwZSI6ImFjY2VzcyJ9.OBe8qrg2-jLfCtqxIvfygk0G2cVBghY2WdTifPdP8LfZlLgEhAqsNFtM9yuvqtMRWcsgxHltemVvb30B5OgTZg',
+            refresh_token: 'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0ODY2IiwiaXNfYWRtaW4iOjAsImV4cCI6MTY4NTA5NzUzMSwidHlwZSI6InJlZnJlc2gifQ.qxxxJuy6dP3sIPdyfjS8vqT2PNOXmC6zItVhPhMMgjrc_XUs7rMYAOWQV12tRwxCD_I01eesaAjcPcTPm9Zzcg',
+            token_type: 'Bearer',
+            expire_timestamp: 1684579131),
+      ),*/ //const LoginPage(),MyHomePage(title: 'События'),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  const MyHomePage({super.key, required this.title, required this.token});
 
+  final String token;
   final String title;
 
   @override
@@ -76,25 +89,75 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    int? filterType = 0;
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
-        actions: [
-          IconButton(
-            tooltip: "Фильтры",
-            icon: const Icon(
-              Icons.filter_alt_outlined,
-            ),
-            onPressed: () {},
-          ),
-          IconButton(
-            tooltip: "Уведомления",
-            icon: const Icon(
-              Icons.notifications_outlined,
-            ),
-            onPressed: () {},
-          ),
-        ],
+        automaticallyImplyLeading: false,
+        title: selectedIndex == 1
+            ? Text('Чаты')
+            : selectedIndex == 2
+                ? Text('Мои события')
+                : selectedIndex == 3
+                    ? Text('Профиль')
+                    : Text(widget.title),
+        actions: selectedIndex == 0
+            ? [
+                IconButton(
+                  tooltip: "Фильтры",
+                  icon: const Icon(
+                    Icons.filter_alt_outlined,
+                  ),
+                  //TODO Фильтрация
+                  onPressed: () {
+                    var categories = ['Все', 'Для детей', 'Другие'];
+                    showDialog<void>(
+                      context: context,
+                      builder: (BuildContext context) {
+                        int? selectedRadio = 0;
+                        return AlertDialog(
+                          title: const Text('Выбрать категорию событий'),
+                          content: StatefulBuilder(
+                            builder:
+                                (BuildContext context, StateSetter setState) {
+                              return Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: List<Widget>.generate(3, (int index) {
+                                  return RadioListTile<int>(
+                                    title: Text(categories[index]),
+                                    activeColor: Colors.green,
+                                    value: index,
+                                    groupValue: selectedRadio,
+                                    onChanged: (int? value) {
+                                      setState(() => selectedRadio = value);
+                                    },
+                                  );
+                                }),
+                              );
+                            },
+                          ),
+                          actions: [
+                            TextButton(onPressed: () {}, child: Text('Отмена')),
+                            TextButton(
+                                onPressed: () {
+                                  setState(() => filterType = selectedRadio);
+                                },
+                                child: Text('Выбрать')),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                ),
+                IconButton(
+                  tooltip: "Уведомления",
+                  icon: const Icon(
+                    Icons.notifications_outlined,
+                  ),
+                  //TODO Уведомления
+                  onPressed: () {},
+                ),
+              ]
+            : null,
       ),
       body: PageView(
         controller: pageController,
@@ -106,8 +169,8 @@ class _MyHomePageState extends State<MyHomePage> {
         children: [
           EventsPage(),
           MessagesPage(),
-          MyEventsPage(),
-          ProfilePage(),
+          MyEventsPage(token: widget.token),
+          ProfilePage(token: widget.token),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(

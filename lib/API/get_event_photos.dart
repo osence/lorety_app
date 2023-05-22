@@ -13,10 +13,11 @@ class EventPhoto {
   final String? mimetype;
   final int? order;
 
-  String getPhotoUrl(){
+  String getPhotoUrl() {
     return 'https://api-dev.lorety.com/v2/event/cover/${name.split('.')[0]}';
   }
-  String getOldPhotoUrl(){
+
+  String getOldPhotoUrl() {
     return 'https://old.lorety.com/uploads/event_photos/$event_id/orig/$name';
   }
 
@@ -24,9 +25,14 @@ class EventPhoto {
       this.archived, this.event_id, this.created_at, this.mimetype, this.order);
 }
 
+String getCoverUrl(cover){
+  return 'https://api-dev.lorety.com/v2/event/cover/$cover';
+}
+
 Future<List<EventPhoto>> fetchEventPhotos(event_id) async {
   final dio = Dio();
   final List<EventPhoto> event_photos_list = [];
+
   final response = await dio.get(
     'https://api-dev.lorety.com/v2/event/photos/$event_id',
   );

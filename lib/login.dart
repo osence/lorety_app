@@ -14,16 +14,16 @@ class _LoginPageState extends State<LoginPage> {
   final tecPassword = TextEditingController();
   //TODO баг: после перехода на окно назад, остаётся вывод об ошибке _validate
   bool _validate = false;
-  late AuthToken? token;
+  late AuthToken? _token;
 
   void getToken() async {
-    token = await fetchAuthToken(_tecLogin.text, tecPassword.text);
-    if (token != null) {
+    final _token = await fetchAuthToken(_tecLogin.text, tecPassword.text);
+    if (_token != null) {
       _validate = false;
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => const MyHomePage(title: 'События')));
+              builder: (context) => MyHomePage(title: 'События', token: _token.access_token,)));
     } else {
       setState(() {
         print('test');
@@ -153,28 +153,5 @@ class _LoginPageState extends State<LoginPage> {
             // )
           ]),
     ));
-  }
-}
-
-class MyPopup extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text('Ваш ответ:'),
-      actions: [
-        ElevatedButton(
-          onPressed: () {
-            Navigator.pop(context, true);
-          },
-          child: Text('Больше'),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            Navigator.pop(context, false);
-          },
-          child: Text('Меньше'),
-        ),
-      ],
-    );
   }
 }

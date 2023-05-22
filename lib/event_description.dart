@@ -6,8 +6,10 @@ class eventDescription extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Информация')),
-      body: Text(fullDescription)
-      );
+        appBar: AppBar(title: Text('Информация')),
+        body: Container(
+          padding: const EdgeInsets.all(30),
+          child: SingleChildScrollView(child: Text(fullDescription)),
+        ));
   }
 }
